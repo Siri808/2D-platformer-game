@@ -1,0 +1,80 @@
+import numpy as np
+
+# Function: Perceptron model (5-layer version)
+def perceptron(weight, bias, x):
+    # ---------------- LAYER 1 ----------------
+    model = np.dot(x, weight) + bias
+    print(f"Layer 1 (model): {model}")
+    logit = 1 / (1 + np.exp(-model))
+    print(f"Layer 1 (logit): {logit}")
+    
+(    # ---------------- LAYER 2 ----------------
+    model2 = np.dot(logit, weight) + bias   # added line for 2nd layer
+    logit2 = 1 / (1 + np.exp(-model2))
+    
+    # ---------------- LAYER 3 ----------------
+    model3 = np.dot(logit2, weight) + bias  # added line for 3rd layer
+    logit3 = 1 / (1 + np.exp(-model3))
+    
+    # ---------------- LAYER 4 ----------------
+    model4 = np.dot(logit3, weight) + bias  # added line for 4th layer
+    logit4 = 1 / (1 + np.exp(-model4))
+    
+    # ---------------- LAYER 5 ----------------
+    model5 = np.dot(logit4, weight) + bias  # added line for 5th layer
+    logit5 = 1 / (1 + np.exp(-model5))
+    )layer depends
+    return np.round(logit5)
+
+# Function: Compute output for a given logic type (AND / NAND)
+def compute(logictype, weightdict, dataset):
+    weights = np.array([
+        weightdict[logictype]['w0'],
+        weightdict[logictype]['w1'],
+        weightdict[logictype]['w2']
+    ])
+    bias = weightdict['bias'][logictype]
+
+    output = np.array([
+        perceptron(weights, bias, data)
+        for data in dataset
+    ])
+
+    print(logictype)
+    return logictype, output
+
+# Function: Display formatted table
+def show_table(dataset, name, data):
+    print(f"\nLogic Function: {name[6:].upper()}")
+    print("X0\tX1\tX2\tY")
+    for inputs, output in zip(dataset, data):
+        print(f"{inputs[0]}\t{inputs[1]}\t{inputs[2]}\t{int(output)}")
+
+# Main function
+def main():
+    # Define weights and biases
+    logic = {
+        'logic_and': {'w0': -0.1, 'w1': 0.2, 'w2': 0.2},
+        'logic_nand': {'w0': 0.6, 'w1': -0.8, 'w2': -0.8},
+        'bias': {'logic_and': -0.2, 'logic_nand': 0.3}
+    }
+
+    # Input dataset [Bias, X1, X2]
+    dataset = np.array([
+        [1, 0, 0],
+        [1, 0, 1],
+        [1, 1, 0],
+        [1, 1, 1]
+    ])
+
+    # Compute outputs
+    logic_and = compute('logic_and', logic, dataset)
+    logic_nand = compute('logic_nand', logic, dataset)
+
+    # Display tables
+    for gate in [logic_and, logic_nand]:
+        show_table(dataset, *gate)
+
+# Run the main program
+if __name__ == '__main__':
+    main()
